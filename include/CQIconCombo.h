@@ -11,8 +11,11 @@ class CQIconCombo : public QComboBox {
  public:
   CQIconCombo(QWidget *parent=0);
 
-  void setMenuIconSize(const QSize &s);
-  const QSize &menuIconSize() const { return iconSize_; }
+  int iconWidth() const { return iconWidth_; }
+  void setIconWidth(int i) { iconWidth_ = i; }
+
+  void setMenuTextWidth(int w);
+  int menuTextWidth() const { return textWidth_; }
 
   void addItem(const QIcon &icon, const QString &str, const QVariant &var=QVariant());
   QVariant itemData(int ind) const;
@@ -28,11 +31,10 @@ class CQIconCombo : public QComboBox {
  protected:
   void showPopup();
 
-  QSize calcSize(bool includeText) const;
-
  private:
-  CQIconComboModel *model_;
-  QSize             iconSize_;
+  CQIconComboModel *model_     { 0 };
+  int               iconWidth_ { -1 };
+  int               textWidth_ { -1 };
 };
 
 #endif

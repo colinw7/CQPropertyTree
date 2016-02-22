@@ -8,19 +8,20 @@
 #include <cassert>
 #include <iostream>
 
-enum { BUTTON_WIDTH = 20 };
-
 class CQIconComboDelegate : public QAbstractItemDelegate {
  public:
   CQIconComboDelegate(CQIconCombo *combo);
 
-  void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+  void paint(QPainter *painter, const QStyleOptionViewItem &option,
+             const QModelIndex &index) const;
 
   QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
  private:
   CQIconCombo *combo_;
 };
+
+//---
 
 class CQIconComboModel : public QAbstractListModel {
  public:
@@ -32,6 +33,7 @@ class CQIconComboModel : public QAbstractListModel {
 
   int rowCount(const QModelIndex &) const { return data_.size(); }
 
+  // icon, text
   int columnCount(const QModelIndex &) const { return 2; }
 
   QVariant data(const QModelIndex &index, int role) const {
@@ -53,8 +55,11 @@ class CQIconComboModel : public QAbstractListModel {
       return QVariant(data_[row].text);
 #endif
     else if (role == Qt::SizeHintRole) {
-      if      (col == 0)
-        return QVariant(combo_->menuIconSize());
+      int is = combo_->style()->pixelMetric(QStyle::PM_SmallIconSize);
+
+      if      (col == 0) {
+        return QVariant(QSize(is, is));
+      }
       else if (col == 1){
         QString str = data_[row].text;
 
@@ -63,7 +68,7 @@ class CQIconComboModel : public QAbstractListModel {
         QFontMetrics fm(font);
 
         int width  = fm.width(str);
-        int height = std::max(fm.height(), combo_->menuIconSize().height());
+        int height = std::max(fm.height(), is);
 
         return QSize(width, height);
       }
@@ -118,13 +123,8 @@ class CQIconComboModel : public QAbstractListModel {
 
 CQIconCombo::
 CQIconCombo(QWidget *parent) :
- QComboBox(parent), iconSize_(16, 16)
+ QComboBox(parent)
 {
-  //QListView *lv = qobject_cast<QListView*>(this->view());
-  //lv->setResizeMode(QListView::Adjust);
-
-  //setSizeAdjustPolicy(QComboBox::AdjustToContents);
-
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
   CQIconComboDelegate *delegate = new CQIconComboDelegate(this);
@@ -144,11 +144,9 @@ CQIconCombo(QWidget *parent) :
 
 void
 CQIconCombo::
-setMenuIconSize(const QSize &s)
+setMenuTextWidth(int w)
 {
-  iconSize_ = s;
-
-  setIconSize(iconSize_);
+  textWidth_ = w;
 }
 
 void
@@ -192,9 +190,16 @@ void
 CQIconCombo::
 showPopup()
 {
-  QSize s = calcSize(true);
+  int border = 3;
 
-  view()->setFixedWidth(s.width());
+  int iw = style()->pixelMetric(QStyle::PM_SmallIconSize);
+
+  if (iconWidth() > 0)
+    iw = iconWidth();
+
+  int w = menuTextWidth() + iw + 3*border;
+
+  view()->setMinimumWidth(w);
 
   QComboBox::showPopup();
 }
@@ -203,9 +208,16 @@ QSize
 CQIconCombo::
 sizeHint() const
 {
-  QSize s = menuIconSize();
+  QSize cs = QComboBox::sizeHint();
 
-  return s + QSize(BUTTON_WIDTH + 4, 4);
+  int is = style()->pixelMetric(QStyle::PM_SmallIconSize);
+
+  cs.setHeight(is + 8);
+
+  if (iconWidth() > 0)
+    cs.setWidth(iconWidth());
+
+  return cs;
 }
 
 QSize
@@ -215,6 +227,7 @@ minimumSizeHint() const
   return sizeHint();
 }
 
+#if 0
 QSize
 CQIconCombo::
 calcSize(bool includeText) const
@@ -245,6 +258,7 @@ calcSize(bool includeText) const
 
   return QSize(w, h);
 }
+#endif
 
 void
 CQIconCombo::
@@ -274,16 +288,16 @@ paintEvent(QPaintEvent *)
     style()->subControlRect(QStyle::CC_ComboBox, &opt, QStyle::SC_ComboBoxArrow, this);
 
   // draw the icon
-
   QRect rect = opt.rect.adjusted(2, 2, -(popupRect.width() + 2), -2);
 
   painter.fillRect(rect, QColor(255,255,255));
 
-  int x  = 3;
+  int border = 3;
+
+  int x  = border;
   int yc = rect.y() + rect.height()/2;
 
-  int iw = menuIconSize().width();
-  int ih = menuIconSize().height();
+  int is = style()->pixelMetric(QStyle::PM_SmallIconSize);
 
   int row = currentIndex();
   if (row < 0) return;
@@ -292,7 +306,24 @@ paintEvent(QPaintEvent *)
 
   QIcon icon = model()->data(ind, Qt::DisplayRole).value<QIcon>();
 
-  painter.drawPixmap(x, yc - ih/2, icon.pixmap(QSize(iw, ih)));
+  painter.drawPixmap(x, yc - is/2, icon.pixmap(QSize(rect.width(), is)));
+
+  //------
+
+  // calc text width (for menu)
+  QFontMetrics fm(font());
+
+  int textWidth = 0;
+
+  for (int i = 0; i < count(); ++i) {
+    QModelIndex ind = model()->index(i, 1);
+
+    QString text = model()->data(ind, Qt::DisplayRole).toString();
+
+    textWidth = std::max(textWidth, fm.width(text));
+  }
+
+  setMenuTextWidth(textWidth);
 }
 
 //---------
@@ -323,29 +354,40 @@ paint(QPainter *painter, const QStyleOptionViewItem &opt, const QModelIndex &ind
     painter->fillRect(opt.rect, c);
   }
 
-  // draw text
+  //---
+
+  // only draw first column
   int row = index.row();
   int col = index.column();
 
   if (col != 0) return;
 
+  //---
+
+  // get icon data
   QModelIndex ind1 = model->index(row, 0);
   QModelIndex ind2 = model->index(row, 1);
 
   QIcon   icon = model->data(ind1, Qt::DisplayRole).value<QIcon>();
   QString text = model->data(ind2, Qt::DisplayRole).toString();
 
+  //---
+
   int border = 3;
 
+  // draw icon
   int yc = opt.rect.y() + opt.rect.height()/2;
 
   int x = opt.rect.x() + border;
 
-  int iw = combo_->menuIconSize().width();
-  int ih = combo_->menuIconSize().height();
+  int iw = opt.rect.width() - combo_->menuTextWidth() - 3*border;
+  int ih = combo_->style()->pixelMetric(QStyle::PM_SmallIconSize);
 
-  painter->drawPixmap(x, yc - ih/2, icon.pixmap(QSize(iw, ih)));
+  QIcon::Mode iconMode = (active ? QIcon::Selected : QIcon::Normal);
 
+  painter->drawPixmap(x, yc - ih/2, icon.pixmap(QSize(iw, ih), iconMode));
+
+  // draw text
   x += iw + border;
 
   QFontMetrics fm(combo_->font());
@@ -353,7 +395,6 @@ paint(QPainter *painter, const QStyleOptionViewItem &opt, const QModelIndex &ind
   if (active)
     painter->setPen(opt.palette.highlightedText().color());
   else {
-    //QColor c = opt.palette.text().color();
     QColor c = opt.palette.highlight().color();
 
     painter->setPen(c);
@@ -371,14 +412,17 @@ sizeHint(const QStyleOptionViewItem &, const QModelIndex &index) const
   int row = index.row();
   int col = index.column();
 
+  // only first column
   if (col != 0) return QSize();
 
+  // get column sizes
   QModelIndex ind1 = model->index(row, 0);
   QModelIndex ind2 = model->index(row, 1);
 
   QSize s1 = model->data(ind1, Qt::SizeHintRole).value<QSize>();
   QSize s2 = model->data(ind2, Qt::SizeHintRole).value<QSize>();
 
+  // calc size
   int border = 3;
 
   QSize sh(s1.width() + s2.width() + 3*border, std::max(s1.height(), s2.height()) + 2*border);

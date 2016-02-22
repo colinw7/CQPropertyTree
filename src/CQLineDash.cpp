@@ -2,19 +2,27 @@
 #include <CQIconCombo.h>
 #include <CQUtil.h>
 
+#include <QApplication>
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QToolButton>
 #include <QMenu>
 #include <QPainter>
+#include <QIconEngine>
+
+#if 0
 #include <QProxyStyle>
 
 class CQLineDashProxyStyle : public QProxyStyle {
  public:
+  CQLineDashProxyStyle(int is) :
+   is_(is) {
+  }
+
   int pixelMetric(PixelMetric metric, const QStyleOption *option, const QWidget *widget) const {
     if      (metric == QStyle::PM_MenuHMargin  ) return 0;
     else if (metric == QStyle::PM_MenuVMargin  ) return 0;
-    else if (metric == QStyle::PM_SmallIconSize) return 60;
+    else if (metric == QStyle::PM_SmallIconSize) return 4*is_;
 
     return QProxyStyle::pixelMetric(metric, option, widget);
   }
@@ -22,17 +30,41 @@ class CQLineDashProxyStyle : public QProxyStyle {
   QSize sizeFromContents(ContentsType type, const QStyleOption *option, const QSize &size,
                          const QWidget *widget) const {
     if (type == QStyle::CT_MenuItem)
-      return QSize(80 + size.width(), 32);
+      return QSize(5*is_ + size.width(), 2*is_);
 
     return QProxyStyle::sizeFromContents(type, option, size, widget);
   }
+
+ private:
+  int is_;
+};
+#endif
+
+// draw line icon pixmap
+// TODO: cache pixmap ?
+class CQLineDashIconEngine : public QIconEngine {
+ public:
+  CQLineDashIconEngine(const CLineDash &dash) :
+   dash_(dash) {
+  }
+
+  QSize actualSize(const QSize & size, QIcon::Mode mode, QIcon::State state);
+
+  QPixmap pixmap(const QSize & size, QIcon::Mode mode, QIcon::State state);
+
+  void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state);
+
+  QIconEngine *clone() const { return new CQLineDashIconEngine(dash_); }
+
+ private:
+  CLineDash dash_;
 };
 
 //------
 
 CQLineDash::
 CQLineDash(QWidget *parent) :
- QFrame(parent), editiable_(false)
+ QFrame(parent), editable_(false)
 {
   setObjectName("line_dash");
 
@@ -44,6 +76,8 @@ CQLineDash(QWidget *parent) :
   layout->setMargin(0); layout->setSpacing(0);
 
   //---
+
+  // editable controls
 
   edit_ = new QLineEdit;
   edit_->setObjectName("edit");
@@ -65,17 +99,21 @@ CQLineDash(QWidget *parent) :
 
   connect(menu_, SIGNAL(triggered(QAction *)), this, SLOT(menuItemActivated(QAction *)));
 
+  int is = style()->pixelMetric(QStyle::PM_SmallIconSize);
+
   button_->setPopupMode(QToolButton::InstantPopup);
   button_->setAutoRaise(true);
-  button_->setFixedSize(QSize(11, 20));
+  button_->setFixedSize(QSize(is, is + 4));
 
   layout->addWidget(button_);
 
   //---
 
+  // combo control
+
   combo_ = new CQIconCombo;
 
-  combo_->setMenuIconSize(QSize(pixmapWidth(), pixmapHeight()));
+  combo_->setIconWidth(5*is);
 
   layout->addWidget(combo_);
 
@@ -121,22 +159,20 @@ CQLineDash(QWidget *parent) :
   addDashOption("0.25,0.25", CLineDash("0.25,0.25"));
   addDashOption("0.1,0.1"  , CLineDash("0.1,0.1"));
 
-  edit_  ->setVisible(editiable_);
-  button_->setVisible(editiable_);
-  combo_ ->setVisible(! editiable_);
+  //---
+
+  updateState();
 }
 
 void
 CQLineDash::
 setEditable(bool edit)
 {
-  if (edit == editiable_) return;
+  if (edit == editable_) return;
 
-  editiable_ = edit;
+  editable_ = edit;
 
-  edit_  ->setVisible(editiable_);
-  button_->setVisible(editiable_);
-  combo_ ->setVisible(! editiable_);
+  updateState();
 }
 
 void
@@ -145,15 +181,28 @@ setLineDash(const CLineDash &dash)
 {
   dash_ = dash;
 
+  updateState();
+}
+
+void
+CQLineDash::
+updateState()
+{
+  edit_  ->setVisible(editable_);
+  button_->setVisible(editable_);
+  combo_ ->setVisible(! editable_);
+
   edit_->setText(dash_.toString().c_str());
 
   for (int i = 0; i < combo_->count(); ++i) {
     QVariant var = combo_->itemData(i);
 
-    CLineDash dash1 = var.value<CLineDash>();
+    CLineDash dash = var.value<CLineDash>();
 
-    if (dash == dash1) {
-      combo_->setCurrentIndex(i);
+    if (dash_ == dash) {
+      if (i != combo_->currentIndex())
+        combo_->setCurrentIndex(i);
+
       break;
     }
   }
@@ -163,6 +212,7 @@ void
 CQLineDash::
 dashChangedSlot()
 {
+  // line edit changed
   CLineDash dash;
 
   QString str = edit_->text();
@@ -178,6 +228,7 @@ void
 CQLineDash::
 menuItemActivated(QAction *action)
 {
+  // edit menu changed
   edit_->setText(action->text());
 
   dashChangedSlot();
@@ -187,6 +238,7 @@ void
 CQLineDash::
 comboItemChanged()
 {
+  // combo (non editable) changed
   int ind = combo_->currentIndex();
 
   QVariant var = combo_->itemData(ind);
@@ -203,39 +255,83 @@ addDashOption(const std::string &id, const CLineDash &dash)
   auto p = actions_.find(id);
   if (p != actions_.end()) return;
 
-  CQLineDashAction *action = new CQLineDashAction(this, id, dash);
+  QIcon icon = dashIcon(dash);
+
+  CQLineDashAction *action = new CQLineDashAction(this, id, dash, icon);
 
   actions_[id] = action;
 
   menu_->addAction(action);
 
-  combo_->addItem(QIcon(action->pixmap()), action->text(), QVariant::fromValue(dash));
+  combo_->addItem(icon, action->text(), QVariant::fromValue(dash));
+}
+
+QIcon
+CQLineDash::
+dashIcon(const CLineDash &dash)
+{
+  return QIcon(new CQLineDashIconEngine(dash));
 }
 
 //---
 
 CQLineDashAction::
-CQLineDashAction(CQLineDash *parent, const std::string &id, const CLineDash &dash) :
+CQLineDashAction(CQLineDash *parent, const std::string &id,
+                 const CLineDash &dash, const QIcon &icon) :
  QAction(parent), parent_(parent), id_(id), dash_(dash)
 {
-  init();
+  setIcon(icon);
+  setText(id_.c_str());
+
+  setIconVisibleInMenu(true);
+}
+
+//---
+
+QSize
+CQLineDashIconEngine::
+actualSize(const QSize &size, QIcon::Mode /*mode*/, QIcon::State /*state*/)
+{
+  return size;
+}
+
+QPixmap
+CQLineDashIconEngine::
+pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state)
+{
+  QPixmap pixmap(size);
+
+  QPainter painter(&pixmap);
+
+  paint(&painter, QRect(QPoint(0, 0), size), mode, state);
+
+  return pixmap;
 }
 
 void
-CQLineDashAction::
-init()
+CQLineDashIconEngine::
+paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state)
 {
-  QRect rect(0, 0, parent_->pixmapWidth(), parent_->pixmapHeight());
+  painter->setRenderHints(QPainter::Antialiasing);
 
-  pixmap_ = QPixmap(rect.width(), rect.height());
+  QColor bg, fg;
 
-  pixmap_.fill(QColor(0,0,0,0));
+  if      (state == QIcon::On) {
+    bg = qApp->palette().highlight().color();
+    fg = QColor(255,255,255);
+  }
+  else if (mode == QIcon::Active || mode == QIcon::Selected) {
+    bg = qApp->palette().highlight().color();
+    fg = QColor(255,255,255);
+  }
+  else {
+    bg = QColor(255,255,255); //qApp->palette().base().color();
+    fg = QColor(0,0,0);
+  }
 
-  QPainter painter(&pixmap_);
+  painter->fillRect(rect, bg);
 
-  painter.setRenderHints(QPainter::Antialiasing);
-
-  QPen pen(QColor(0,0,0));
+  QPen pen(fg);
 
   pen.setWidthF(1.5);
 
@@ -243,14 +339,7 @@ init()
 
   int y = rect.height()/2;
 
-  painter.setPen(pen);
+  painter->setPen(pen);
 
-  painter.drawLine(2, y, rect.width() - 2, y);
-
-  setIcon(QIcon(pixmap_));
-  setText(id_.c_str());
-
-  setIconVisibleInMenu(true);
-
-  //pixmap_.save("temp.png");
+  painter->drawLine(2, y, rect.width() - 2, y);
 }

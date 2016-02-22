@@ -15,10 +15,12 @@ class CQLineDashAction;
 class CQLineDash : public QFrame {
   Q_OBJECT
 
+  Q_PROPERTY(bool editable READ editable WRITE setEditable)
+
  public:
   CQLineDash(QWidget *parent=0);
 
-  bool editiable() const { return editiable_; }
+  bool editable() const { return editable_; }
   void setEditable(bool b);
 
   void setLineDash(const CLineDash &dash);
@@ -26,8 +28,10 @@ class CQLineDash : public QFrame {
 
   void addDashOption(const std::string &id, const CLineDash &dash);
 
-  int pixmapWidth () const { return 96; }
-  int pixmapHeight() const { return 20; }
+  static QIcon dashIcon(const CLineDash &dash);
+
+ private:
+  void updateState();
 
  private slots:
   void dashChangedSlot();
@@ -40,7 +44,7 @@ class CQLineDash : public QFrame {
  private:
   typedef std::map<std::string, CQLineDashAction *> Actions;
 
-  bool         editiable_;
+  bool         editable_;
   CLineDash    dash_;
   QLineEdit   *edit_;
   QToolButton *button_;
@@ -51,9 +55,8 @@ class CQLineDash : public QFrame {
 
 class CQLineDashAction : public QAction {
  public:
-  CQLineDashAction(CQLineDash *parent, const std::string &id, const CLineDash &dash);
-
-  const QPixmap &pixmap() const { return pixmap_; }
+  CQLineDashAction(CQLineDash *parent, const std::string &id,
+                   const CLineDash &dash, const QIcon &icon);
 
  private:
   void init();
@@ -62,7 +65,6 @@ class CQLineDashAction : public QAction {
   CQLineDash  *parent_;
   std::string  id_;
   CLineDash    dash_;
-  QPixmap      pixmap_;
 };
 
 #endif

@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_CQLineDash_t {
-    QByteArrayData data[9];
-    char stringdata[101];
+    QByteArrayData data[10];
+    char stringdata[110];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,11 +37,12 @@ QT_MOC_LITERAL(4, 35, 4),
 QT_MOC_LITERAL(5, 40, 15),
 QT_MOC_LITERAL(6, 56, 17),
 QT_MOC_LITERAL(7, 74, 8),
-QT_MOC_LITERAL(8, 83, 16)
+QT_MOC_LITERAL(8, 83, 16),
+QT_MOC_LITERAL(9, 100, 8)
     },
     "CQLineDash\0valueChanged\0\0CLineDash\0"
     "dash\0dashChangedSlot\0menuItemActivated\0"
-    "QAction*\0comboItemChanged\0"
+    "QAction*\0comboItemChanged\0editable\0"
 };
 #undef QT_MOC_LITERAL
 
@@ -52,7 +53,7 @@ static const uint qt_meta_data_CQLineDash[] = {
        0,       // classname
        0,    0, // classinfo
        4,   14, // methods
-       0,    0, // properties
+       1,   42, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
@@ -73,6 +74,9 @@ static const uint qt_meta_data_CQLineDash[] = {
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 7,    2,
     QMetaType::Void,
+
+ // properties: name, type, flags
+       9, QMetaType::Bool, 0x00095103,
 
        0        // eod
 };
@@ -144,6 +148,37 @@ int CQLineDash::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
             qt_static_metacall(this, _c, _id, _a);
         _id -= 4;
     }
+#ifndef QT_NO_PROPERTIES
+      else if (_c == QMetaObject::ReadProperty) {
+        void *_v = _a[0];
+        switch (_id) {
+        case 0: *reinterpret_cast< bool*>(_v) = editable(); break;
+        }
+        _id -= 1;
+    } else if (_c == QMetaObject::WriteProperty) {
+        void *_v = _a[0];
+        switch (_id) {
+        case 0: setEditable(*reinterpret_cast< bool*>(_v)); break;
+        }
+        _id -= 1;
+    } else if (_c == QMetaObject::ResetProperty) {
+        _id -= 1;
+    } else if (_c == QMetaObject::QueryPropertyDesignable) {
+        _id -= 1;
+    } else if (_c == QMetaObject::QueryPropertyScriptable) {
+        _id -= 1;
+    } else if (_c == QMetaObject::QueryPropertyStored) {
+        _id -= 1;
+    } else if (_c == QMetaObject::QueryPropertyEditable) {
+        _id -= 1;
+    } else if (_c == QMetaObject::QueryPropertyUser) {
+        _id -= 1;
+    } else if (_c == QMetaObject::RegisterPropertyMetaType) {
+        if (_id < 1)
+            *reinterpret_cast<int*>(_a[0]) = -1;
+        _id -= 1;
+    }
+#endif // QT_NO_PROPERTIES
     return _id;
 }
 

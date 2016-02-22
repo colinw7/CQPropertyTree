@@ -21,7 +21,9 @@ void
 CQRealSpin::
 init(double value)
 {
-  setRange(-1E50, 1E50);
+  setObjectName("realSpin");
+
+  setRange(-1E6, 1E6);
 
   setValue(value);
 
