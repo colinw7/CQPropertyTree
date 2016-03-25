@@ -332,7 +332,7 @@ getItemData(QTreeWidgetItem *item, QObject* &obj, QString &path)
 
 void
 CQPropertyTree::
-customContextMenuSlot(const QPoint& pos)
+customContextMenuSlot(const QPoint &pos)
 {
   QTreeWidgetItem *item = itemAt(pos);
   if (! item) return;
