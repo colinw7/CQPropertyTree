@@ -10,6 +10,8 @@ CONFIG += staticlib
 
 QMAKE_CXXFLAGS += -std=c++11
 
+MOC_DIR = .moc
+
 # Input
 HEADERS += \
 ../include/CQPropertyDelegate.h \
@@ -23,9 +25,6 @@ HEADERS += \
 ../include/CQLineDash.h \
 ../include/CQPaletteChooser.h \
 ../include/CQPaletteDialog.h \
-../include/CQPixmapCache.h \
-../include/CQPoint2DEdit.h \
-../include/CQRealSpin.h \
 ../include/CQSlider.h \
 
 SOURCES += \
@@ -40,9 +39,6 @@ CQIconCombo.cpp \
 CQLineDash.cpp \
 CQPaletteChooser.cpp \
 CQPaletteDialog.cpp \
-CQPixmapCache.cpp \
-CQPoint2DEdit.cpp \
-CQRealSpin.cpp \
 CQSlider.cpp \
 
 OBJECTS_DIR = ../obj
