@@ -12,21 +12,6 @@ QMAKE_CXXFLAGS += -std=c++11
 
 MOC_DIR = .moc
 
-# Input
-HEADERS += \
-../include/CQPropertyDelegate.h \
-../include/CQPropertyEditor.h \
-../include/CQPropertyItem.h \
-../include/CQPropertyTree.h \
-\
-../include/CQAngleSpinBox.h \
-../include/CQComboSlider.h \
-../include/CQIconCombo.h \
-../include/CQLineDash.h \
-../include/CQPaletteChooser.h \
-../include/CQPaletteDialog.h \
-../include/CQSlider.h \
-
 SOURCES += \
 CQPropertyDelegate.cpp \
 CQPropertyEditor.cpp \
@@ -40,6 +25,20 @@ CQLineDash.cpp \
 CQPaletteChooser.cpp \
 CQPaletteDialog.cpp \
 CQSlider.cpp \
+
+HEADERS += \
+../include/CQPropertyDelegate.h \
+../include/CQPropertyEditor.h \
+../include/CQPropertyItem.h \
+../include/CQPropertyTree.h \
+\
+../include/CQAngleSpinBox.h \
+../include/CQComboSlider.h \
+../include/CQIconCombo.h \
+../include/CQLineDash.h \
+../include/CQPaletteChooser.h \
+../include/CQPaletteDialog.h \
+../include/CQSlider.h \
 
 OBJECTS_DIR = ../obj
 
