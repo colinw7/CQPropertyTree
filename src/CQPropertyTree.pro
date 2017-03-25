@@ -18,7 +18,6 @@ CQPropertyEditor.cpp \
 CQPropertyItem.cpp \
 CQPropertyTree.cpp \
 \
-CQAngleSpinBox.cpp \
 CQComboSlider.cpp \
 CQIconCombo.cpp \
 CQLineDash.cpp \
@@ -32,7 +31,6 @@ HEADERS += \
 ../include/CQPropertyItem.h \
 ../include/CQPropertyTree.h \
 \
-../include/CQAngleSpinBox.h \
 ../include/CQComboSlider.h \
 ../include/CQIconCombo.h \
 ../include/CQLineDash.h \
@@ -53,4 +51,5 @@ INCLUDEPATH += \
 ../../CFile/include \
 ../../CStrUtil/include \
 ../../CMath/include \
+../../COS/include \
 ../../CUtil/include \
