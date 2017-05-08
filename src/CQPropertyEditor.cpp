@@ -162,7 +162,7 @@ void
 CQPropertyRealEditor::
 connect(QWidget *w, QObject *obj, const char *method)
 {
-  if (type_ == Type::RealSlider) {
+  if      (type_ == Type::RealSlider) {
     CQRealSlider *slider = qobject_cast<CQRealSlider *>(w);
     assert(slider);
 
@@ -186,7 +186,7 @@ QVariant
 CQPropertyRealEditor::
 getValue(QWidget *w)
 {
-  if (type_ == Type::RealSlider) {
+  if      (type_ == Type::RealSlider) {
     CQRealSlider *slider = qobject_cast<CQRealSlider *>(w);
     assert(slider);
 
@@ -210,7 +210,7 @@ void
 CQPropertyRealEditor::
 setValue(QWidget *w, const QVariant &var)
 {
-  if (type_ == Type::RealSlider) {
+  if      (type_ == Type::RealSlider) {
     CQRealSlider *slider = qobject_cast<CQRealSlider *>(w);
     assert(slider);
 
