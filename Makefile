@@ -3,4 +3,4 @@ all:
 
 clean:
 	cd src; make clean
-	rm lib/*.a
+	rm -f lib/*.a
