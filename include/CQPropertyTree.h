@@ -19,7 +19,8 @@ class CQPropertyTree : public QTreeWidget {
 
   void clear();
 
-  CQPropertyItem *addProperty(const QString &path, QObject *object, const QString &name);
+  CQPropertyItem *addProperty(const QString &path, QObject *object,
+                              const QString &name, const QString &alias="");
 
   void selectObject(const QObject *obj);
 

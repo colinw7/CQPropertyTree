@@ -61,7 +61,7 @@ clear()
 
 CQPropertyItem *
 CQPropertyTree::
-addProperty(const QString &path, QObject *object, const QString &name)
+addProperty(const QString &path, QObject *object, const QString &name, const QString &alias)
 {
   QStringList pathParts = path.split('/', QString::SkipEmptyParts);
 
@@ -109,6 +109,9 @@ addProperty(const QString &path, QObject *object, const QString &name)
 
   if (! parent)
     addTopLevelItem(item);
+
+  if (alias != "")
+    item->setLabel(alias);
 
   return item;
 }
