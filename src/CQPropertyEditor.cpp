@@ -359,6 +359,8 @@ createEdit(QWidget *parent)
 {
   CQColorChooser *chooser = new CQColorChooser(parent);
 
+  chooser->setAutoFillBackground(true);
+
   chooser->setStyles(CQColorChooser::Text | CQColorChooser::ColorButton);
 
   return chooser;
