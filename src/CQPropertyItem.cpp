@@ -381,6 +381,14 @@ paint(const CQPropertyDelegate *delegate, QPainter *painter,
     delegate->drawPoint(painter, option, var.value<QPointF>(), index);
     return true;
   }
+  else if (typeName == "QSizeF") {
+    delegate->drawSize(painter, option, var.value<QSizeF>(), index);
+    return true;
+  }
+  else if (typeName == "QRectF") {
+    delegate->drawRect(painter, option, var.value<QRectF>(), index);
+    return true;
+  }
   else if (typeName == "bool") {
     delegate->drawCheck(painter, option, var.toBool(), index);
     return true;

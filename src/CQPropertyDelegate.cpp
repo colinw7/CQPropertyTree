@@ -366,6 +366,43 @@ drawPoint(QPainter *painter, const QStyleOptionViewItem &option,
 
 void
 CQPropertyDelegate::
+drawSize(QPainter *painter, const QStyleOptionViewItem &option,
+         const QSizeF &s, const QModelIndex &index) const
+{
+  QItemDelegate::drawBackground(painter, option, index);
+
+  QRect rect = option.rect;
+
+  //rect.setWidth(option.rect.height());
+
+  //QFontMetrics fm(painter->font());
+
+  QString str = QString("(%1, %2)").arg(s.width()).arg(s.height());
+
+  QItemDelegate::drawDisplay(painter, option, rect, str);
+}
+
+void
+CQPropertyDelegate::
+drawRect(QPainter *painter, const QStyleOptionViewItem &option,
+         const QRectF &r, const QModelIndex &index) const
+{
+  QItemDelegate::drawBackground(painter, option, index);
+
+  QRect rect = option.rect;
+
+  //rect.setWidth(option.rect.height());
+
+  //QFontMetrics fm(painter->font());
+
+  QString str = QString("(%1, %2) (%3 %4)").arg(r.left ()).arg(r.top   ()).
+                                            arg(r.right()).arg(r.bottom());
+
+  QItemDelegate::drawDisplay(painter, option, rect, str);
+}
+
+void
+CQPropertyDelegate::
 drawAngle(QPainter *painter, const QStyleOptionViewItem &option,
          const CAngle &a, const QModelIndex &index) const
 {

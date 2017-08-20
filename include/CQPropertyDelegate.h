@@ -43,6 +43,10 @@ class CQPropertyDelegate : public QItemDelegate {
                  const QFont &f, const QModelIndex &index) const;
   void drawPoint(QPainter *painter, const QStyleOptionViewItem &option,
                  const QPointF &p, const QModelIndex &index) const;
+  void drawSize (QPainter *painter, const QStyleOptionViewItem &option,
+                 const QSizeF &s, const QModelIndex &index) const;
+  void drawRect (QPainter *painter, const QStyleOptionViewItem &option,
+                 const QRectF &r, const QModelIndex &index) const;
   void drawAngle(QPainter *painter, const QStyleOptionViewItem &option,
                  const CAngle &a, const QModelIndex &index) const;
   void drawString(QPainter *painter, const QStyleOptionViewItem &option,

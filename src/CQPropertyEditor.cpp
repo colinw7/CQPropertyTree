@@ -2,6 +2,7 @@
 #include <CQColorChooser.h>
 #include <CQFontChooser.h>
 #include <CQPaletteChooser.h>
+#include <CQBBox2DEdit.h>
 #include <CQPoint2DEdit.h>
 #include <CQLineDash.h>
 #include <CQAngleSpinBox.h>
@@ -34,6 +35,7 @@ CQPropertyEditorMgr()
   setEditor("QPalette" , new CQPropertyPaletteEditor );
   setEditor("QPointF"  , new CQPropertyPointEditor   );
   setEditor("QSizeF"   , new CQPropertySizeFEditor   );
+  setEditor("QRectF"   , new CQPropertyRectFEditor   );
 }
 
 void
@@ -344,6 +346,56 @@ setValue(QWidget *w, const QVariant &var)
   QSizeF s = var.toSizeF();
 
   edit->setValue(QPointF(s.width(), s.height()));
+}
+
+//------
+
+CQPropertyRectFEditor::
+CQPropertyRectFEditor()
+{
+}
+
+QWidget *
+CQPropertyRectFEditor::
+createEdit(QWidget *parent)
+{
+  CQBBox2DEdit *edit = new CQBBox2DEdit(parent);
+
+  return edit;
+}
+
+void
+CQPropertyRectFEditor::
+connect(QWidget *w, QObject *obj, const char *method)
+{
+  CQBBox2DEdit *edit = qobject_cast<CQBBox2DEdit *>(w);
+  assert(edit);
+
+  QObject::connect(edit, SIGNAL(valueChanged()), obj, method);
+}
+
+QVariant
+CQPropertyRectFEditor::
+getValue(QWidget *w)
+{
+  CQBBox2DEdit *edit = qobject_cast<CQBBox2DEdit *>(w);
+  assert(edit);
+
+  QRectF rect = edit->getQValue();
+
+  return rect;
+}
+
+void
+CQPropertyRectFEditor::
+setValue(QWidget *w, const QVariant &var)
+{
+  CQBBox2DEdit *edit = qobject_cast<CQBBox2DEdit *>(w);
+  assert(edit);
+
+  QRectF rect = var.toRectF();
+
+  edit->setValue(rect);
 }
 
 //------

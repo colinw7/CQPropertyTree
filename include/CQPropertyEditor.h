@@ -114,6 +114,21 @@ class CQPropertySizeFEditor : public CQPropertyEditorFactory {
 
 //------
 
+class CQPropertyRectFEditor : public CQPropertyEditorFactory {
+ public:
+  CQPropertyRectFEditor();
+
+  QWidget *createEdit(QWidget *parent);
+
+  void connect(QWidget *w, QObject *obj, const char *method);
+
+  QVariant getValue(QWidget *w);
+
+  void setValue(QWidget *w, const QVariant &var);
+};
+
+//------
+
 class CQPropertyColorEditor : public CQPropertyEditorFactory {
  public:
   CQPropertyColorEditor();
