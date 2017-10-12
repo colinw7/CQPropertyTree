@@ -4,6 +4,7 @@
 #include <QAbstractItemDelegate>
 #include <QListView>
 #include <QStylePainter>
+#include <QLayout>
 
 #include <cassert>
 #include <iostream>
@@ -18,7 +19,7 @@ class CQIconComboDelegate : public QAbstractItemDelegate {
   QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
  private:
-  CQIconCombo *combo_;
+  CQIconCombo *combo_ { nullptr };
 };
 
 //---
@@ -58,9 +59,9 @@ class CQIconComboModel : public QAbstractListModel {
       int is = combo_->style()->pixelMetric(QStyle::PM_SmallIconSize);
 
       if      (col == 0) {
-        return QVariant(QSize(is, is));
+        return QVariant(QSize(is + 4, is + 4));
       }
-      else if (col == 1){
+      else if (col == 1) {
         QString str = data_[row].text;
 
         QFont font = combo_->font();
@@ -68,7 +69,7 @@ class CQIconComboModel : public QAbstractListModel {
         QFontMetrics fm(font);
 
         int width  = fm.width(str);
-        int height = std::max(fm.height(), is);
+        int height = std::max(fm.height() + 2, is + 4);
 
         return QSize(width, height);
       }
@@ -115,7 +116,7 @@ class CQIconComboModel : public QAbstractListModel {
 
   typedef std::vector<IconText> Data;
 
-  CQIconCombo *combo_;
+  CQIconCombo *combo_ { nullptr };
   Data         data_;
 };
 
@@ -125,7 +126,7 @@ CQIconCombo::
 CQIconCombo(QWidget *parent) :
  QComboBox(parent)
 {
-  setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+  setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
   CQIconComboDelegate *delegate = new CQIconComboDelegate(this);
 
@@ -140,6 +141,26 @@ CQIconCombo(QWidget *parent) :
   setModelColumn(0);
 
   connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(updateTip()));
+}
+
+void
+CQIconCombo::
+calcMenuTextWidth()
+{
+  // calc text width (for menu)
+  QFontMetrics fm(font());
+
+  int textWidth = 0;
+
+  for (int i = 0; i < count(); ++i) {
+    QModelIndex ind = model()->index(i, 1);
+
+    QString text = model()->data(ind, Qt::DisplayRole).toString();
+
+    textWidth = std::max(textWidth, fm.width(text));
+  }
+
+  setMenuTextWidth(textWidth);
 }
 
 void
@@ -170,7 +191,12 @@ void
 CQIconCombo::
 addItem(const QIcon &icon, const QString &text, const QVariant &var)
 {
+  assert(! icon.isNull());
+
   model_->addValue(icon, text, var);
+
+  if (currentIndex() < 0)
+    setCurrentIndex(0);
 
   setModel(model_);
 
@@ -197,6 +223,9 @@ showPopup()
   if (iconWidth() > 0)
     iw = iconWidth();
 
+  if (menuTextWidth() < 0)
+    calcMenuTextWidth();
+
   int w = menuTextWidth() + iw + 3*border;
 
   view()->setMinimumWidth(w);
@@ -208,14 +237,19 @@ QSize
 CQIconCombo::
 sizeHint() const
 {
-  QSize cs = QComboBox::sizeHint();
+  QFontMetrics fm(font());
+
+  QStyleOptionComboBox opt;
+
+  initStyleOption(&opt);
+
+  QRect popupRect =
+    style()->subControlRect(QStyle::CC_ComboBox, &opt, QStyle::SC_ComboBoxArrow, this);
 
   int is = style()->pixelMetric(QStyle::PM_SmallIconSize);
 
-  cs.setHeight(is + 8);
-
-  if (iconWidth() > 0)
-    cs.setWidth(iconWidth());
+  QSize cs(popupRect.width() + is + 8,
+    std::max(std::max(popupRect.width(), is + 8), fm.height() + 2));
 
   return cs;
 }
@@ -305,25 +339,17 @@ paintEvent(QPaintEvent *)
   QModelIndex ind = model()->index(row, 0);
 
   QIcon icon = model()->data(ind, Qt::DisplayRole).value<QIcon>();
+  assert(! icon.isNull());
 
-  painter.drawPixmap(x, yc - is/2, icon.pixmap(QSize(rect.width(), is)));
+  QPixmap pm = icon.pixmap(QSize(rect.width(), is));
+  assert(! pm.isNull());
+
+  painter.drawPixmap(x, yc - is/2, pm);
 
   //------
 
   // calc text width (for menu)
-  QFontMetrics fm(font());
-
-  int textWidth = 0;
-
-  for (int i = 0; i < count(); ++i) {
-    QModelIndex ind = model()->index(i, 1);
-
-    QString text = model()->data(ind, Qt::DisplayRole).toString();
-
-    textWidth = std::max(textWidth, fm.width(text));
-  }
-
-  setMenuTextWidth(textWidth);
+  calcMenuTextWidth();
 }
 
 //---------
@@ -368,7 +394,9 @@ paint(QPainter *painter, const QStyleOptionViewItem &opt, const QModelIndex &ind
   QModelIndex ind1 = model->index(row, 0);
   QModelIndex ind2 = model->index(row, 1);
 
-  QIcon   icon = model->data(ind1, Qt::DisplayRole).value<QIcon>();
+  QIcon icon = model->data(ind1, Qt::DisplayRole).value<QIcon>();
+  assert(! icon.isNull());
+
   QString text = model->data(ind2, Qt::DisplayRole).toString();
 
   //---
@@ -385,7 +413,10 @@ paint(QPainter *painter, const QStyleOptionViewItem &opt, const QModelIndex &ind
 
   QIcon::Mode iconMode = (active ? QIcon::Selected : QIcon::Normal);
 
-  painter->drawPixmap(x, yc - ih/2, icon.pixmap(QSize(iw, ih), iconMode));
+  QPixmap pm = icon.pixmap(QSize(iw, ih), iconMode);
+  assert(! pm.isNull());
+
+  painter->drawPixmap(x, yc - ih/2, pm);
 
   // draw text
   x += iw + border;
