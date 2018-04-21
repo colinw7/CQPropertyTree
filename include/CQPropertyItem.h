@@ -74,13 +74,13 @@ class CQPropertyItem : public QObject, public QTreeWidgetItem {
 
  private:
   //! private data
-  QString                  name_;   //! property name
-  QString                  info_;   //! property info (RO), (ENUM), ...
-  QString                  type_;   //! property type name
-  QPointer<QObject>        object_; //! property object
-  QWidget                 *widget_; //! editor widget
-  QString                  label_;  //! property label
-  CQPropertyEditorFactory *editor_; //! editor interface
+  QString                  name_;                //! property name
+  QString                  info_;                //! property info (RO), (ENUM), ...
+  QString                  type_;                //! property type name
+  QPointer<QObject>        object_;              //! property object
+  QWidget                 *widget_ {  nullptr }; //! editor widget
+  QString                  label_;               //! property label
+  CQPropertyEditorFactory *editor_ {  nullptr }; //! editor interface
 };
 
 #endif

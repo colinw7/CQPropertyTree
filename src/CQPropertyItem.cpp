@@ -17,7 +17,7 @@ CQPropertyItem::
 CQPropertyItem(QTreeWidgetItem *parent, const QString &name, const QString &info,
                const QString &type, QObject *object) :
  QObject(), QTreeWidgetItem(parent, PROPERTY_ITEM_ID), name_(name), info_(info),
- type_(type), object_(object), widget_(0), label_(), editor_(0)
+ type_(type), object_(object)
 {
   setText(0, name_ + info_);
   setData(1, Qt::EditRole, getEditorData());
@@ -34,7 +34,7 @@ CQPropertyItem(QTreeWidgetItem *parent, const QString &name, const QString &info
 CQPropertyItem::
 CQPropertyItem(const CQPropertyItem &item) :
  QObject(), QTreeWidgetItem(item), name_(item.name_), info_(item.info_),
- type_(item.type_), object_(item.object_), widget_(0), label_(), editor_(0)
+ type_(item.type_), object_(item.object_)
 {
   setText(0, name_ + info_);
   setData(1, Qt::EditRole, getEditorData());
@@ -367,37 +367,33 @@ paint(const CQPropertyDelegate *delegate, QPainter *painter,
 
   if      (typeName == "CAngle") {
     delegate->drawAngle(painter, option, var.value<CAngle>(), index);
-    return true;
   }
   else if (typeName == "QColor") {
     delegate->drawColor(painter, option, var.value<QColor>(), index);
-    return true;
   }
   else if (typeName == "QFont") {
     delegate->drawFont(painter, option, var.value<QFont>(), index);
-    return true;
   }
   else if (typeName == "QPointF") {
     delegate->drawPoint(painter, option, var.value<QPointF>(), index);
-    return true;
   }
   else if (typeName == "QSizeF") {
     delegate->drawSize(painter, option, var.value<QSizeF>(), index);
-    return true;
   }
   else if (typeName == "QRectF") {
     delegate->drawRect(painter, option, var.value<QRectF>(), index);
-    return true;
   }
   else if (typeName == "bool") {
     delegate->drawCheck(painter, option, var.toBool(), index);
-    return true;
   }
   else {
     QString str;
+
     if (! CQUtil::variantToString(var, str))
       return false;
+
     delegate->drawString(painter, option, str, index);
-    return true;
   }
+
+  return true;
 }

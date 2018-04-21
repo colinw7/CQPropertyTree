@@ -13,29 +13,41 @@ CQPropertyTree(QWidget *parent) :
 {
   setObjectName("propertyTree");
 
+  //--
+
   setColumnCount(2);
 
   setHeaderLabels(QStringList() << "Name" << "Value");
 
-  setUniformRowHeights(true);
+  //--
 
   header()->setStretchLastSection(true);
 
   header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
+  //--
+
+  setUniformRowHeights(true);
+
   setAlternatingRowColors(true);
 
   setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
 
+  //--
+
   CQPropertyDelegate *delegate = new CQPropertyDelegate(this);
 
   setItemDelegate(delegate);
+
+  //--
 
   connect(this, SIGNAL(itemClicked(QTreeWidgetItem *, int)),
           this, SLOT(itemClickedSlot(QTreeWidgetItem *, int)));
 
   connect(this, SIGNAL(itemSelectionChanged()),
           this, SLOT(itemSelectionSlot()));
+
+  //--
 
   setContextMenuPolicy(Qt::CustomContextMenu);
 
