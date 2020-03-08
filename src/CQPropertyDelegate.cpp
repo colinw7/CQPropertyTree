@@ -234,8 +234,8 @@ createEdit(QWidget *parent, const QString &text) const
 
 void
 CQPropertyDelegate::
-drawCheck(QPainter *painter, const QStyleOptionViewItem &option,
-          bool checked, const QModelIndex &index) const
+drawChecked(QPainter *painter, const QStyleOptionViewItem &option,
+            bool checked, const QModelIndex &index) const
 {
   QItemDelegate::drawBackground(painter, option, index);
 

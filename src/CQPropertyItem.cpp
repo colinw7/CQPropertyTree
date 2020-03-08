@@ -384,7 +384,7 @@ paint(const CQPropertyDelegate *delegate, QPainter *painter,
     delegate->drawRect(painter, option, var.value<QRectF>(), index);
   }
   else if (typeName == "bool") {
-    delegate->drawCheck(painter, option, var.toBool(), index);
+    delegate->drawChecked(painter, option, var.toBool(), index);
   }
   else {
     QString str;

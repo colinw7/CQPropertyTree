@@ -113,7 +113,11 @@ CQLineDash(QWidget *parent) :
 
   combo_ = new CQIconCombo;
 
+  combo_->setObjectName("combo");
+
   combo_->setIconWidth(5*is);
+
+  combo_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
   layout->addWidget(combo_);
 
