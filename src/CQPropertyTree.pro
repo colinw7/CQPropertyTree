@@ -19,8 +19,6 @@ CQPropertyItem.cpp \
 CQPropertyTree.cpp \
 \
 CQComboSlider.cpp \
-CQIconCombo.cpp \
-CQLineDash.cpp \
 CQPaletteChooser.cpp \
 CQPaletteDialog.cpp \
 CQSlider.cpp \
@@ -32,8 +30,6 @@ HEADERS += \
 ../include/CQPropertyTree.h \
 \
 ../include/CQComboSlider.h \
-../include/CQIconCombo.h \
-../include/CQLineDash.h \
 ../include/CQPaletteChooser.h \
 ../include/CQPaletteDialog.h \
 ../include/CQSlider.h \
