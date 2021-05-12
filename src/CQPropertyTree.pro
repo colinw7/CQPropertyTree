@@ -18,10 +18,8 @@ CQPropertyEditor.cpp \
 CQPropertyItem.cpp \
 CQPropertyTree.cpp \
 \
-CQComboSlider.cpp \
 CQPaletteChooser.cpp \
 CQPaletteDialog.cpp \
-CQSlider.cpp \
 
 HEADERS += \
 ../include/CQPropertyDelegate.h \
@@ -29,10 +27,8 @@ HEADERS += \
 ../include/CQPropertyItem.h \
 ../include/CQPropertyTree.h \
 \
-../include/CQComboSlider.h \
 ../include/CQPaletteChooser.h \
 ../include/CQPaletteDialog.h \
-../include/CQSlider.h \
 
 OBJECTS_DIR = ../obj
 
