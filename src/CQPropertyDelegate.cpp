@@ -25,15 +25,15 @@ QWidget *
 CQPropertyDelegate::
 createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index) const
 {
-  QTreeWidgetItem *item = getModelItem(index);
+  auto *item = getModelItem(index);
   assert(item);
 
-  CQPropertyDelegate *th = const_cast<CQPropertyDelegate *>(this);
+  auto *th = const_cast<CQPropertyDelegate *>(this);
 
-  QWidget *w = 0;
+  QWidget *w = nullptr;
 
   if (CQPropertyItem::isType(item->type())) {
-    CQPropertyItem *item1 = dynamic_cast<CQPropertyItem *>(item);
+    auto *item1 = dynamic_cast<CQPropertyItem *>(item);
     assert(item1);
 
     if (index.column() == 1)
@@ -62,14 +62,14 @@ void
 CQPropertyDelegate::
 setEditorData(QWidget *, const QModelIndex &index) const
 {
-  QTreeWidgetItem *item = getModelItem(index);
+  auto *item = getModelItem(index);
   assert(item);
 
   if (CQPropertyItem::isType(item->type())) {
-    CQPropertyItem *item1 = dynamic_cast<CQPropertyItem *>(item);
+    auto *item1 = dynamic_cast<CQPropertyItem *>(item);
     assert(item1);
 
-    QVariant var = index.model()->data(index, Qt::DisplayRole);
+    auto var = index.model()->data(index, Qt::DisplayRole);
 
     QString value;
 
@@ -88,14 +88,14 @@ void
 CQPropertyDelegate::
 setModelData(QWidget *, QAbstractItemModel *model, const QModelIndex &index) const
 {
-  QTreeWidgetItem *item = getModelItem(index);
+  auto *item = getModelItem(index);
   assert(item);
 
   if (CQPropertyItem::isType(item->type())) {
-    CQPropertyItem *item1 = dynamic_cast<CQPropertyItem *>(item);
+    auto *item1 = dynamic_cast<CQPropertyItem *>(item);
     assert(item1);
 
-    QVariant var = item1->getEditorData();
+    auto var = item1->getEditorData();
 
     model->setData(index, var);
   }
@@ -119,7 +119,7 @@ void
 CQPropertyDelegate::
 paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-  QTreeWidgetItem *item = getModelItem(index);
+  auto *item = getModelItem(index);
   assert(item);
 
   //---
@@ -129,12 +129,12 @@ paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &
   QBrush b;
 
   if (inside) {
-    QVariant value = index.data(Qt::BackgroundRole);
+    auto value = index.data(Qt::BackgroundRole);
 
     if (value.canConvert<QBrush>())
       b = qvariant_cast<QBrush>(value);
 
-    QColor c = option.palette.color(QPalette::Window);
+    auto c = option.palette.color(QPalette::Window);
 
     QBrush b1(c.darker(110));
 
@@ -145,10 +145,10 @@ paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &
   //---
 
   if (CQPropertyItem::isType(item->type())) {
-    CQPropertyItem *item1 = dynamic_cast<CQPropertyItem *>(item);
+    auto *item1 = dynamic_cast<CQPropertyItem *>(item);
     assert(item1);
 
-    QStyleOptionViewItem option1 = option;
+    auto option1 = option;
 
     if (! item1->isWritable()) {
       option1.font.setItalic(true);
@@ -179,7 +179,7 @@ QSize
 CQPropertyDelegate::
 sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-  QSize size = QItemDelegate::sizeHint(option, index);
+  auto size = QItemDelegate::sizeHint(option, index);
 
   size.setHeight(size.height() + 2);
 
@@ -197,7 +197,7 @@ getModelItem(const QModelIndex &index) const
   if (! index.parent().isValid())
     item = tree_->topLevelItem(index.row());
   else {
-    QTreeWidgetItem *parent = getModelItem(index.parent());
+    auto *parent = getModelItem(index.parent());
     assert(parent);
 
     item = parent->child(index.row());
@@ -212,7 +212,7 @@ QWidget *
 CQPropertyDelegate::
 createEdit(QWidget *parent, const QString &text) const
 {
-  QLineEdit *edit = new QLineEdit(parent);
+  auto *edit = new QLineEdit(parent);
 
   edit->setText(text);
 
@@ -223,8 +223,8 @@ createEdit(QWidget *parent, const QString &text) const
   edit->setReadOnly(true);
 
   // set background of preview text to window background
-  QPalette plt = QApplication::palette();
-  QColor bgColor = plt.color(QPalette::Window);
+  auto plt = QApplication::palette();
+  auto bgColor = plt.color(QPalette::Window);
   QString styleStr;
   styleStr.sprintf("background: #%2x%2x%2x", bgColor.red(), bgColor.green(), bgColor.blue());
   edit->setStyleSheet(styleStr);
@@ -239,9 +239,9 @@ drawChecked(QPainter *painter, const QStyleOptionViewItem &option,
 {
   QItemDelegate::drawBackground(painter, option, index);
 
-  Qt::CheckState checkState = (checked ? Qt::Checked : Qt::Unchecked);
+  auto checkState = (checked ? Qt::Checked : Qt::Unchecked);
 
-  QRect rect = option.rect;
+  auto rect = option.rect;
 
   rect.setWidth(option.rect.height());
 
@@ -269,18 +269,17 @@ drawColor(QPainter *painter, const QStyleOptionViewItem &option,
 {
   QItemDelegate::drawBackground(painter, option, index);
 
-  QRect rect = option.rect;
+  auto rect = option.rect;
 
   rect.setWidth(option.rect.height());
 
   rect.adjust(0, 1, -3, -2);
 
-  painter->fillRect(rect, QBrush(c));
+  painter->setBrush(QBrush(c));
+  painter->setPen(QColor(Qt::black)); // TODO: contrast border
 
-  painter->setPen(QColor(0,0,0));
+//painter->fillRect(rect, QBrush(c));
   painter->drawRect(rect);
-
-  QFontMetrics fm(painter->font());
 
   int x = rect.right() + 2;
 //int y = rect.top() + fm.ascent();
@@ -289,7 +288,6 @@ drawColor(QPainter *painter, const QStyleOptionViewItem &option,
 
   rect1.setCoords(x, option.rect.top(), option.rect.right(), option.rect.bottom());
 
-//painter->drawText(x, y, c.name());
   QItemDelegate::drawDisplay(painter, option, rect1, c.name());
 }
 
@@ -300,14 +298,14 @@ drawFont(QPainter *painter, const QStyleOptionViewItem &option,
 {
   QItemDelegate::drawBackground(painter, option, index);
 
-  QRect rect = option.rect;
+  auto rect = option.rect;
 
   rect.setWidth(option.rect.height());
 
   rect.adjust(0, 1, -3, -2);
 
-  QFont f1 = f;
-  QFont f2 = painter->font();
+  auto f1 = f;
+  auto f2 = painter->font();
 
   QFontMetrics fm1(f1);
   QFontMetrics fm2(f2);
@@ -353,13 +351,13 @@ drawPoint(QPainter *painter, const QStyleOptionViewItem &option,
 {
   QItemDelegate::drawBackground(painter, option, index);
 
-  QRect rect = option.rect;
+  auto rect = option.rect;
 
   //rect.setWidth(option.rect.height());
 
   //QFontMetrics fm(painter->font());
 
-  QString str = QString("(%1, %2)").arg(p.x()).arg(p.y());
+  auto str = QString("(%1, %2)").arg(p.x()).arg(p.y());
 
   QItemDelegate::drawDisplay(painter, option, rect, str);
 }
@@ -371,13 +369,13 @@ drawSize(QPainter *painter, const QStyleOptionViewItem &option,
 {
   QItemDelegate::drawBackground(painter, option, index);
 
-  QRect rect = option.rect;
+  auto rect = option.rect;
 
   //rect.setWidth(option.rect.height());
 
   //QFontMetrics fm(painter->font());
 
-  QString str = QString("(%1, %2)").arg(s.width()).arg(s.height());
+  auto str = QString("(%1, %2)").arg(s.width()).arg(s.height());
 
   QItemDelegate::drawDisplay(painter, option, rect, str);
 }
@@ -389,14 +387,14 @@ drawRect(QPainter *painter, const QStyleOptionViewItem &option,
 {
   QItemDelegate::drawBackground(painter, option, index);
 
-  QRect rect = option.rect;
+  auto rect = option.rect;
 
   //rect.setWidth(option.rect.height());
 
   //QFontMetrics fm(painter->font());
 
-  QString str = QString("(%1, %2) (%3 %4)").arg(r.left ()).arg(r.top   ()).
-                                            arg(r.right()).arg(r.bottom());
+  auto str = QString("(%1, %2) (%3 %4)").arg(r.left ()).arg(r.top   ()).
+                                         arg(r.right()).arg(r.bottom());
 
   QItemDelegate::drawDisplay(painter, option, rect, str);
 }
@@ -408,13 +406,13 @@ drawAngle(QPainter *painter, const QStyleOptionViewItem &option,
 {
   QItemDelegate::drawBackground(painter, option, index);
 
-  QRect rect = option.rect;
+  auto rect = option.rect;
 
   //rect.setWidth(option.rect.height());
 
   //QFontMetrics fm(painter->font());
 
-  QString str = QString("%1").arg(a.degrees());
+  auto str = QString("%1").arg(a.degrees());
 
   QItemDelegate::drawDisplay(painter, option, rect, str);
 }
@@ -426,7 +424,7 @@ drawString(QPainter *painter, const QStyleOptionViewItem &option,
 {
   QItemDelegate::drawBackground(painter, option, index);
 
-  QRect rect = option.rect;
+  auto rect = option.rect;
 
   QItemDelegate::drawDisplay(painter, option, rect, str);
 }
