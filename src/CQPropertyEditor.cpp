@@ -130,7 +130,7 @@ CQPropertyRealEditor::
 createEdit(QWidget *parent)
 {
   if      (type_ == Type::RealSlider) {
-    CQRealSlider *slider = new CQRealSlider(parent);
+    auto *slider = new CQRealSlider(parent);
 
     slider->setAutoFillBackground(true);
 
@@ -165,7 +165,7 @@ CQPropertyRealEditor::
 connect(QWidget *w, QObject *obj, const char *method)
 {
   if      (type_ == Type::RealSlider) {
-    CQRealSlider *slider = qobject_cast<CQRealSlider *>(w);
+    auto *slider = qobject_cast<CQRealSlider *>(w);
     assert(slider);
 
     QObject::connect(slider, SIGNAL(valueChanged(double)), obj, method);
@@ -189,7 +189,7 @@ CQPropertyRealEditor::
 getValue(QWidget *w)
 {
   if      (type_ == Type::RealSlider) {
-    CQRealSlider *slider = qobject_cast<CQRealSlider *>(w);
+    auto *slider = qobject_cast<CQRealSlider *>(w);
     assert(slider);
 
     return QVariant(slider->value());
@@ -213,7 +213,7 @@ CQPropertyRealEditor::
 setValue(QWidget *w, const QVariant &var)
 {
   if      (type_ == Type::RealSlider) {
-    CQRealSlider *slider = qobject_cast<CQRealSlider *>(w);
+    auto *slider = qobject_cast<CQRealSlider *>(w);
     assert(slider);
 
     double r = var.toDouble();

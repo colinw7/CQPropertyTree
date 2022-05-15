@@ -214,7 +214,7 @@ search(const QString &text)
   int n = topLevelItemCount();
 
   for (int i = 0; i < n; ++i) {
-    QTreeWidgetItem *item = topLevelItem(i);
+    auto *item = topLevelItem(i);
 
     searchItemTree(item, text, items);
   }
