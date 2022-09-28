@@ -75,7 +75,7 @@ CQPropertyItem *
 CQPropertyTree::
 addProperty(const QString &path, QObject *object, const QString &name, const QString &alias)
 {
-  QStringList pathParts = path.split('/', QString::SkipEmptyParts);
+  QStringList pathParts = path.split('/', Qt::SkipEmptyParts);
 
   QTreeWidgetItem *parent = 0;
 

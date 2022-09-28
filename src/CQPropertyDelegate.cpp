@@ -225,8 +225,8 @@ createEdit(QWidget *parent, const QString &text) const
   // set background of preview text to window background
   auto plt = QApplication::palette();
   auto bgColor = plt.color(QPalette::Window);
-  QString styleStr;
-  styleStr.sprintf("background: #%2x%2x%2x", bgColor.red(), bgColor.green(), bgColor.blue());
+  auto styleStr =
+    QString::asprintf("background: #%2x%2x%2x", bgColor.red(), bgColor.green(), bgColor.blue());
   edit->setStyleSheet(styleStr);
 
   return edit;
@@ -310,7 +310,7 @@ drawFont(QPainter *painter, const QStyleOptionViewItem &option,
   QFontMetrics fm1(f1);
   QFontMetrics fm2(f2);
 
-  int fw = fm1.width("Abc");
+  int fw = fm1.horizontalAdvance("Abc");
   int fh = fm1.height();
 
   if (fh > rect.height()) {
@@ -318,7 +318,7 @@ drawFont(QPainter *painter, const QStyleOptionViewItem &option,
 
     fm1 = QFontMetrics(f1);
 
-    fw = fm1.width("Abc");
+    fw = fm1.horizontalAdvance("Abc");
   }
 
   int x1 = rect.left();
@@ -327,7 +327,7 @@ drawFont(QPainter *painter, const QStyleOptionViewItem &option,
   painter->save();
 
   painter->setFont(f1);
-  painter->setPen(QColor(0,0,0));
+  painter->setPen(QColor(0, 0, 0));
 
   painter->drawText(x1, y1, "Abc");
 
