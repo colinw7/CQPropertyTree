@@ -10,6 +10,8 @@
 #include <CQSlider.h>
 #include <CQComboSlider.h>
 #include <CQUtil.h>
+#include <CQUtilAngle.h>
+#include <CQUtilLineDash.h>
 #include <QSpinBox>
 #include <cassert>
 
@@ -89,7 +91,7 @@ void
 CQPropertyIntegerEditor::
 connect(QWidget *w, QObject *obj, const char *method)
 {
-  QSpinBox *spin = qobject_cast<QSpinBox *>(w);
+  auto *spin = qobject_cast<QSpinBox *>(w);
   assert(spin);
 
   QObject::connect(spin, SIGNAL(valueChanged(int)), obj, method);
@@ -99,7 +101,7 @@ QVariant
 CQPropertyIntegerEditor::
 getValue(QWidget *w)
 {
-  QSpinBox *spin = qobject_cast<QSpinBox *>(w);
+  auto *spin = qobject_cast<QSpinBox *>(w);
   assert(spin);
 
   return QVariant(spin->value());
@@ -109,7 +111,7 @@ void
 CQPropertyIntegerEditor::
 setValue(QWidget *w, const QVariant &var)
 {
-  QSpinBox *spin = qobject_cast<QSpinBox *>(w);
+  auto *spin = qobject_cast<QSpinBox *>(w);
   assert(spin);
 
   int i = var.toInt();
@@ -171,13 +173,13 @@ connect(QWidget *w, QObject *obj, const char *method)
     QObject::connect(slider, SIGNAL(valueChanged(double)), obj, method);
   }
   else if (type_ == Type::ComboSlider) {
-    CQComboSlider *combo = qobject_cast<CQComboSlider *>(w);
+    auto *combo = qobject_cast<CQComboSlider *>(w);
     assert(combo);
 
     QObject::connect(combo, SIGNAL(valueChanged(double)), obj, method);
   }
   else {
-    CQRealSpin *spin = qobject_cast<CQRealSpin *>(w);
+    auto *spin = qobject_cast<CQRealSpin *>(w);
     assert(spin);
 
     QObject::connect(spin, SIGNAL(valueChanged(double)), obj, method);
@@ -195,13 +197,13 @@ getValue(QWidget *w)
     return QVariant(slider->value());
   }
   else if (type_ == Type::ComboSlider) {
-    CQComboSlider *combo = qobject_cast<CQComboSlider *>(w);
+    auto *combo = qobject_cast<CQComboSlider *>(w);
     assert(combo);
 
     return QVariant(combo->value());
   }
   else {
-    CQRealSpin *spin = qobject_cast<CQRealSpin *>(w);
+    auto *spin = qobject_cast<CQRealSpin *>(w);
     assert(spin);
 
     return QVariant(spin->value());
@@ -221,7 +223,7 @@ setValue(QWidget *w, const QVariant &var)
     slider->setValue(r);
   }
   else if (type_ == Type::ComboSlider) {
-    CQComboSlider *combo = qobject_cast<CQComboSlider *>(w);
+    auto *combo = qobject_cast<CQComboSlider *>(w);
     assert(combo);
 
     double r = var.toDouble();
@@ -229,7 +231,7 @@ setValue(QWidget *w, const QVariant &var)
     combo->setValue(r);
   }
   else {
-    CQRealSpin *spin = qobject_cast<CQRealSpin *>(w);
+    auto *spin = qobject_cast<CQRealSpin *>(w);
     assert(spin);
 
     double r = var.toDouble();
@@ -264,7 +266,7 @@ void
 CQPropertyPointEditor::
 connect(QWidget *w, QObject *obj, const char *method)
 {
-  CQPoint2DEdit *edit = qobject_cast<CQPoint2DEdit *>(w);
+  auto *edit = qobject_cast<CQPoint2DEdit *>(w);
   assert(edit);
 
   QObject::connect(edit, SIGNAL(valueChanged()), obj, method);
@@ -274,7 +276,7 @@ QVariant
 CQPropertyPointEditor::
 getValue(QWidget *w)
 {
-  CQPoint2DEdit *edit = qobject_cast<CQPoint2DEdit *>(w);
+  auto *edit = qobject_cast<CQPoint2DEdit *>(w);
   assert(edit);
 
   return edit->getQValue();
@@ -284,7 +286,7 @@ void
 CQPropertyPointEditor::
 setValue(QWidget *w, const QVariant &var)
 {
-  CQPoint2DEdit *edit = qobject_cast<CQPoint2DEdit *>(w);
+  auto *edit = qobject_cast<CQPoint2DEdit *>(w);
   assert(edit);
 
   QPointF p = var.toPointF();
@@ -318,7 +320,7 @@ void
 CQPropertySizeFEditor::
 connect(QWidget *w, QObject *obj, const char *method)
 {
-  CQPoint2DEdit *edit = qobject_cast<CQPoint2DEdit *>(w);
+  auto *edit = qobject_cast<CQPoint2DEdit *>(w);
   assert(edit);
 
   QObject::connect(edit, SIGNAL(valueChanged()), obj, method);
@@ -328,7 +330,7 @@ QVariant
 CQPropertySizeFEditor::
 getValue(QWidget *w)
 {
-  CQPoint2DEdit *edit = qobject_cast<CQPoint2DEdit *>(w);
+  auto *edit = qobject_cast<CQPoint2DEdit *>(w);
   assert(edit);
 
   QPointF p = edit->getQValue();
@@ -340,7 +342,7 @@ void
 CQPropertySizeFEditor::
 setValue(QWidget *w, const QVariant &var)
 {
-  CQPoint2DEdit *edit = qobject_cast<CQPoint2DEdit *>(w);
+  auto *edit = qobject_cast<CQPoint2DEdit *>(w);
   assert(edit);
 
   QSizeF s = var.toSizeF();
@@ -368,7 +370,7 @@ void
 CQPropertyRectFEditor::
 connect(QWidget *w, QObject *obj, const char *method)
 {
-  CQBBox2DEdit *edit = qobject_cast<CQBBox2DEdit *>(w);
+  auto *edit = qobject_cast<CQBBox2DEdit *>(w);
   assert(edit);
 
   QObject::connect(edit, SIGNAL(valueChanged()), obj, method);
@@ -378,7 +380,7 @@ QVariant
 CQPropertyRectFEditor::
 getValue(QWidget *w)
 {
-  CQBBox2DEdit *edit = qobject_cast<CQBBox2DEdit *>(w);
+  auto *edit = qobject_cast<CQBBox2DEdit *>(w);
   assert(edit);
 
   QRectF rect = edit->getQValue();
@@ -390,7 +392,7 @@ void
 CQPropertyRectFEditor::
 setValue(QWidget *w, const QVariant &var)
 {
-  CQBBox2DEdit *edit = qobject_cast<CQBBox2DEdit *>(w);
+  auto *edit = qobject_cast<CQBBox2DEdit *>(w);
   assert(edit);
 
   QRectF rect = var.toRectF();
@@ -422,7 +424,7 @@ void
 CQPropertyColorEditor::
 connect(QWidget *w, QObject *obj, const char *method)
 {
-  CQColorChooser *chooser = qobject_cast<CQColorChooser *>(w);
+  auto *chooser = qobject_cast<CQColorChooser *>(w);
   assert(chooser);
 
   QObject::connect(chooser, SIGNAL(colorChanged(const QColor&)), obj, method);
@@ -432,7 +434,7 @@ QVariant
 CQPropertyColorEditor::
 getValue(QWidget *w)
 {
-  CQColorChooser *chooser = qobject_cast<CQColorChooser *>(w);
+  auto *chooser = qobject_cast<CQColorChooser *>(w);
   assert(chooser);
 
   return chooser->colorName();
@@ -442,7 +444,7 @@ void
 CQPropertyColorEditor::
 setValue(QWidget *w, const QVariant &var)
 {
-  CQColorChooser *chooser = qobject_cast<CQColorChooser *>(w);
+  auto *chooser = qobject_cast<CQColorChooser *>(w);
   assert(chooser);
 
   QString str = var.toString();
@@ -470,7 +472,7 @@ void
 CQPropertyFontEditor::
 connect(QWidget *w, QObject *obj, const char *method)
 {
-  CQFontChooser *chooser = qobject_cast<CQFontChooser *>(w);
+  auto *chooser = qobject_cast<CQFontChooser *>(w);
   assert(chooser);
 
   QObject::connect(chooser, SIGNAL(fontChanged(const QString&)), obj, method);
@@ -480,7 +482,7 @@ QVariant
 CQPropertyFontEditor::
 getValue(QWidget *w)
 {
-  CQFontChooser *chooser = qobject_cast<CQFontChooser *>(w);
+  auto *chooser = qobject_cast<CQFontChooser *>(w);
   assert(chooser);
 
   return chooser->fontName();
@@ -490,7 +492,7 @@ void
 CQPropertyFontEditor::
 setValue(QWidget *w, const QVariant &var)
 {
-  CQFontChooser *chooser = qobject_cast<CQFontChooser *>(w);
+  auto *chooser = qobject_cast<CQFontChooser *>(w);
   assert(chooser);
 
   QString str = var.toString();
@@ -518,7 +520,7 @@ void
 CQPropertyPaletteEditor::
 connect(QWidget *w, QObject *obj, const char *method)
 {
-  CQPaletteChooser *chooser = qobject_cast<CQPaletteChooser *>(w);
+  auto *chooser = qobject_cast<CQPaletteChooser *>(w);
   assert(chooser);
 
   QObject::connect(chooser, SIGNAL(paletteChanged(const QString&)), obj, method);
@@ -528,7 +530,7 @@ QVariant
 CQPropertyPaletteEditor::
 getValue(QWidget *w)
 {
-  CQPaletteChooser *chooser = qobject_cast<CQPaletteChooser *>(w);
+  auto *chooser = qobject_cast<CQPaletteChooser *>(w);
   assert(chooser);
 
   return chooser->palette();
@@ -538,7 +540,7 @@ void
 CQPropertyPaletteEditor::
 setValue(QWidget *w, const QVariant &var)
 {
-  CQPaletteChooser *chooser = qobject_cast<CQPaletteChooser *>(w);
+  auto *chooser = qobject_cast<CQPaletteChooser *>(w);
   assert(chooser);
 
   QString str = var.toString();
@@ -566,7 +568,7 @@ void
 CQPropertyLineDashEditor::
 connect(QWidget *w, QObject *obj, const char *method)
 {
-  CQLineDash *edit = qobject_cast<CQLineDash *>(w);
+  auto *edit = qobject_cast<CQLineDash *>(w);
   assert(edit);
 
   QObject::connect(edit, SIGNAL(valueChanged(const CLineDash &)), obj, method);
@@ -576,7 +578,7 @@ QVariant
 CQPropertyLineDashEditor::
 getValue(QWidget *w)
 {
-  CQLineDash *edit = qobject_cast<CQLineDash *>(w);
+  auto *edit = qobject_cast<CQLineDash *>(w);
   assert(edit);
 
   return QVariant::fromValue(edit->getLineDash());
@@ -586,7 +588,7 @@ void
 CQPropertyLineDashEditor::
 setValue(QWidget *w, const QVariant &var)
 {
-  CQLineDash *edit = qobject_cast<CQLineDash *>(w);
+  auto *edit = qobject_cast<CQLineDash *>(w);
   assert(edit);
 
   CLineDash dash = var.value<CLineDash>();
@@ -614,7 +616,7 @@ void
 CQPropertyAngleEditor::
 connect(QWidget *w, QObject *obj, const char *method)
 {
-  CQAngleSpinBox *edit = qobject_cast<CQAngleSpinBox *>(w);
+  auto *edit = qobject_cast<CQAngleSpinBox *>(w);
   assert(edit);
 
   QObject::connect(edit, SIGNAL(angleChanged(const CAngle &)), obj, method);
@@ -624,7 +626,7 @@ QVariant
 CQPropertyAngleEditor::
 getValue(QWidget *w)
 {
-  CQAngleSpinBox *edit = qobject_cast<CQAngleSpinBox *>(w);
+  auto *edit = qobject_cast<CQAngleSpinBox *>(w);
   assert(edit);
 
   return QVariant::fromValue(edit->getAngle());
@@ -634,7 +636,7 @@ void
 CQPropertyAngleEditor::
 setValue(QWidget *w, const QVariant &var)
 {
-  CQAngleSpinBox *edit = qobject_cast<CQAngleSpinBox *>(w);
+  auto *edit = qobject_cast<CQAngleSpinBox *>(w);
   assert(edit);
 
   CAngle angle = var.value<CAngle>();

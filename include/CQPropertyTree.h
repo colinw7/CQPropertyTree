@@ -64,9 +64,9 @@ class CQPropertyTree : public QTreeWidget {
 
   void showContextMenu(QObject *obj, const QPoint &globalPos);
 
-  void mouseMoveEvent(QMouseEvent *);
+  void mouseMoveEvent(QMouseEvent *) override;
 
-  void leaveEvent(QEvent *);
+  void leaveEvent(QEvent *) override;
 
  private:
   bool        mouseHighlight_ { false };

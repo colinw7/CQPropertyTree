@@ -2,6 +2,8 @@
 #include <CQPropertyEditor.h>
 #include <CQPropertyDelegate.h>
 #include <CQUtil.h>
+#include <CQUtilAngle.h>
+#include <CQUtilLineDash.h>
 
 #include <QVariant>
 #include <QComboBox>

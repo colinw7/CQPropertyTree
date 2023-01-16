@@ -2,6 +2,8 @@
 #include <CQPropertyTree.h>
 #include <CQPropertyItem.h>
 #include <CQUtil.h>
+#include <CQUtilAngle.h>
+#include <CQUtilLineDash.h>
 
 #include <QApplication>
 #include <QTreeWidget>

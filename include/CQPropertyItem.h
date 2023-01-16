@@ -42,7 +42,7 @@ class CQPropertyItem : public QObject, public QTreeWidgetItem {
   QString getLabel() const;
 
   //! clone (required by QTreeWidgetItem interface)
-  QTreeWidgetItem *clone() const { return new CQPropertyItem(*this); }
+  QTreeWidgetItem *clone() const override { return new CQPropertyItem(*this); }
 
   //! handle click
   bool click();
