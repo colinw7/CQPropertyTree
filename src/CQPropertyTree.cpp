@@ -77,7 +77,7 @@ addProperty(const QString &path, QObject *object, const QString &name, const QSt
 {
   QStringList pathParts = path.split('/', Qt::SkipEmptyParts);
 
-  QTreeWidgetItem *parent = 0;
+  QTreeWidgetItem *parent = nullptr;
 
   for (int i = 0; i < pathParts.size(); ++i) {
     if (i == 0) {
@@ -273,7 +273,7 @@ void
 CQPropertyTree::
 itemClickedSlot(QTreeWidgetItem *item, int column)
 {
-  CQPropertyItem *item1 = 0;
+  CQPropertyItem *item1 = nullptr;
 
   if (CQPropertyItem::isType(item->type()))
     item1 = static_cast<CQPropertyItem *>(item);
@@ -336,7 +336,7 @@ getItemData(QTreeWidgetItem *item, QObject* &obj, QString &path)
     n = item1->childCount();
   }
 
-  obj = 0;
+  obj = nullptr;
 
   if (CQPropertyItem::isType(item1->type())) {
     CQPropertyItem *item2 = static_cast<CQPropertyItem *>(item1);

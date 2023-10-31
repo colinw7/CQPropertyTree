@@ -16,7 +16,7 @@ class CQPropertyEditorFactory {
 
   virtual ~CQPropertyEditorFactory() { }
 
-  virtual QWidget *createEdit(QWidget *parent=0) = 0;
+  virtual QWidget *createEdit(QWidget *parent=nullptr) = 0;
 
   virtual void connect(QWidget *w, QObject *obj, const char *method) = 0;
 

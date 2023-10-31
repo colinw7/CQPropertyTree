@@ -15,7 +15,7 @@ class CQPropertyTree : public QTreeWidget {
   typedef std::vector<QTreeWidgetItem *> Items;
 
  public:
-  CQPropertyTree(QWidget *parent=0);
+  CQPropertyTree(QWidget *parent=nullptr);
 
   void clear();
 
