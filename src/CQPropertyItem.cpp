@@ -178,7 +178,7 @@ createEditor(QWidget *parent)
 
     const QStringList &names = propInfo.enumNames();
 
-    QComboBox *combo = new QComboBox(parent);
+    auto *combo = new QComboBox(parent);
 
     combo->addItems(names);
     combo->setCurrentIndex(combo->findText(valueStr));
@@ -191,7 +191,7 @@ createEditor(QWidget *parent)
   // bool - create toggle
   // TODO: use button press (no need to edit) see CQCheckTree.cpp
   else if (typeName == "bool") {
-    QCheckBox *check = new QCheckBox(parent);
+    auto *check = new QCheckBox(parent);
 
     check->setChecked(var.toBool());
 
@@ -206,7 +206,7 @@ createEditor(QWidget *parent)
   }
   // anything else - create line edit
   else {
-    QLineEdit *edit = new QLineEdit(parent);
+    auto *edit = new QLineEdit(parent);
 
     QString valueStr;
 
@@ -309,7 +309,7 @@ updateValue()
     setEditorData(var);
   }
   else if (propInfo.isEnumType()) {
-    QComboBox *combo = qobject_cast<QComboBox *>(widget_);
+    auto *combo = qobject_cast<QComboBox *>(widget_);
     assert(combo);
 
     QString text = combo->currentText();
@@ -317,7 +317,7 @@ updateValue()
     setEditorData(text);
   }
   else if (typeName == "bool") {
-    QCheckBox *check = qobject_cast<QCheckBox *>(widget_);
+    auto *check = qobject_cast<QCheckBox *>(widget_);
     assert(check);
 
     check->setText(check->isChecked() ? "true" : "false");
@@ -327,7 +327,7 @@ updateValue()
     setEditorData(text);
   }
   else {
-    QLineEdit *edit = qobject_cast<QLineEdit *>(widget_);
+    auto *edit = qobject_cast<QLineEdit *>(widget_);
     assert(edit);
 
     QString text = edit->text();

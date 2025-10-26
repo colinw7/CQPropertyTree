@@ -35,7 +35,7 @@ CQPropertyTree(QWidget *parent) :
 
   //--
 
-  CQPropertyDelegate *delegate = new CQPropertyDelegate(this);
+  auto *delegate = new CQPropertyDelegate(this);
 
   setItemDelegate(delegate);
 
@@ -84,7 +84,7 @@ addProperty(const QString &path, QObject *object, const QString &name, const QSt
       QList<QTreeWidgetItem *> items = findItems(pathParts[i], Qt::MatchExactly, 0);
 
       if (items.empty()) {
-        QTreeWidgetItem *item = new QTreeWidgetItem(QStringList() << pathParts[i] << "");
+        auto *item = new QTreeWidgetItem(QStringList() << pathParts[i] << "");
 
         items.push_back(item);
 
@@ -107,14 +107,14 @@ addProperty(const QString &path, QObject *object, const QString &name, const QSt
       }
 
       if (j >= nc) {
-        QTreeWidgetItem *child = new QTreeWidgetItem(parent, QStringList() << pathParts[i] << "");
+        auto *child = new QTreeWidgetItem(parent, QStringList() << pathParts[i] << "");
 
         parent = child;
       }
     }
   }
 
-  CQPropertyItem *item = new CQPropertyItem(parent, name, "", "", object);
+  auto *item = new CQPropertyItem(parent, name, "", "", object);
 
   connect(item, SIGNAL(valueChanged(QObject *, const QString &)),
           this, SIGNAL(valueChanged(QObject *, const QString &)));
@@ -133,7 +133,7 @@ CQPropertyTree::
 selectObject(const QObject *obj)
 {
   for (int i = 0; i < topLevelItemCount(); ++i) {
-    QTreeWidgetItem *item = topLevelItem(i);
+    auto *item = topLevelItem(i);
 
     if (selectObject(item, obj))
       return;
@@ -145,7 +145,7 @@ CQPropertyTree::
 selectObject(QTreeWidgetItem *item, const QObject *obj)
 {
   if (CQPropertyItem::isType(item->type())) {
-    CQPropertyItem *item1 = static_cast<CQPropertyItem *>(item);
+    auto *item1 = static_cast<CQPropertyItem *>(item);
 
     QObject *obj1 = item1->getObject();
 
@@ -191,7 +191,7 @@ void
 CQPropertyTree::
 getSelectedObjects(std::vector<QObject *> &objs)
 {
-  QList<QTreeWidgetItem *> items = this->selectedItems();
+  auto items = this->selectedItems();
 
   for (int i = 0; i < items.length(); ++i) {
     QTreeWidgetItem *item = items[i];
@@ -239,7 +239,7 @@ void
 CQPropertyTree::
 searchItemTree(QTreeWidgetItem *item, const QString &text, Items &items)
 {
-  QString itemText = item->text(0);
+  auto itemText = item->text(0);
 
   if (itemText.indexOf(text) >= 0) {
     item->setSelected(true);
@@ -280,7 +280,7 @@ itemClickedSlot(QTreeWidgetItem *item, int column)
 
   if (item1 && column == 1) {
     if (item1->click()) {
-      QModelIndex ind = indexFromItem(item1, column);
+      auto ind = indexFromItem(item1, column);
 
       update(ind);
     }
@@ -300,7 +300,7 @@ void
 CQPropertyTree::
 itemSelectionSlot()
 {
-  QList<QTreeWidgetItem *> items = selectedItems();
+  auto items = selectedItems();
   if (items.empty()) return;
 
   QObject *obj;
@@ -315,7 +315,7 @@ void
 CQPropertyTree::
 getItemData(QTreeWidgetItem *item, QObject* &obj, QString &path)
 {
-  QTreeWidgetItem *item1 = item;
+  auto *item1 = item;
 
   while (item1) {
     if (path.length())
@@ -339,7 +339,7 @@ getItemData(QTreeWidgetItem *item, QObject* &obj, QString &path)
   obj = nullptr;
 
   if (CQPropertyItem::isType(item1->type())) {
-    CQPropertyItem *item2 = static_cast<CQPropertyItem *>(item1);
+    auto *item2 = static_cast<CQPropertyItem *>(item1);
 
     obj = item2->getObject();
   }
@@ -349,7 +349,7 @@ void
 CQPropertyTree::
 customContextMenuSlot(const QPoint &pos)
 {
-  QTreeWidgetItem *item = itemAt(pos);
+  auto *item = itemAt(pos);
   if (! item) return;
 
   QObject *obj;
@@ -368,19 +368,20 @@ void
 CQPropertyTree::
 showContextMenu(QObject *obj, const QPoint &globalPos)
 {
-  emit menuExec(obj, globalPos);
+  Q_EMIT menuExec(obj, globalPos);
 }
 
 void
 CQPropertyTree::
 mouseMoveEvent(QMouseEvent *me)
 {
-  if (! isMouseHighlight()) return;
+  if (! isMouseHighlight())
+    return;
 
-  QTreeWidgetItem *item = itemAt(me->pos());
+  auto *item = itemAt(me->pos());
 
   if (item) {
-    QModelIndex ind = indexFromItem(item, 0);
+    auto ind = indexFromItem(item, 0);
 
     setMouseInd(ind);
   }

@@ -44,7 +44,7 @@ void
 CQPropertyEditorMgr::
 setEditor(const QString &typeName, CQPropertyEditorFactory *editor)
 {
-  Editors::iterator p = editors_.find(typeName);
+  auto p = editors_.find(typeName);
 
   if (p != editors_.end()) {
     std::swap((*p).second, editor);
@@ -79,7 +79,7 @@ QWidget *
 CQPropertyIntegerEditor::
 createEdit(QWidget *parent)
 {
-  QSpinBox *spin = new QSpinBox(parent);
+  auto *spin = new QSpinBox(parent);
 
   spin->setRange(min_, max_);
   spin->setSingleStep(step_);
@@ -145,14 +145,14 @@ createEdit(QWidget *parent)
     return slider;
   }
   else if (type_ == Type::ComboSlider) {
-    CQComboSlider *combo = new CQComboSlider(parent, min_, min_, max_);
+    auto *combo = new CQComboSlider(parent, min_, min_, max_);
 
     combo->setAutoFillBackground(true);
 
     return combo;
   }
   else {
-    CQRealSpin *spin = new CQRealSpin(parent);
+    auto *spin = new CQRealSpin(parent);
 
     spin->setRange(min_, max_);
     spin->setSingleStep(step_);
@@ -252,7 +252,7 @@ QWidget *
 CQPropertyPointEditor::
 createEdit(QWidget *parent)
 {
-  CQPoint2DEdit *edit = new CQPoint2DEdit(parent);
+  auto *edit = new CQPoint2DEdit(parent);
 
   edit->setSpin(true);
   edit->setMinimum(CPoint2D(min_, min_));
@@ -306,7 +306,7 @@ QWidget *
 CQPropertySizeFEditor::
 createEdit(QWidget *parent)
 {
-  CQPoint2DEdit *edit = new CQPoint2DEdit(parent);
+  auto *edit = new CQPoint2DEdit(parent);
 
   edit->setSpin(true);
   edit->setMinimum(CPoint2D(0, 0));
@@ -361,7 +361,7 @@ QWidget *
 CQPropertyRectFEditor::
 createEdit(QWidget *parent)
 {
-  CQBBox2DEdit *edit = new CQBBox2DEdit(parent);
+  auto *edit = new CQBBox2DEdit(parent);
 
   return edit;
 }
@@ -411,7 +411,7 @@ QWidget *
 CQPropertyColorEditor::
 createEdit(QWidget *parent)
 {
-  CQColorChooser *chooser = new CQColorChooser(parent);
+  auto *chooser = new CQColorChooser(parent);
 
   chooser->setAutoFillBackground(true);
 
@@ -447,7 +447,7 @@ setValue(QWidget *w, const QVariant &var)
   auto *chooser = qobject_cast<CQColorChooser *>(w);
   assert(chooser);
 
-  QString str = var.toString();
+  auto str = var.toString();
 
   chooser->setColorName(str);
 }
@@ -463,7 +463,7 @@ QWidget *
 CQPropertyFontEditor::
 createEdit(QWidget *parent)
 {
-  CQFontChooser *chooser = new CQFontChooser(parent);
+  auto *chooser = new CQFontChooser(parent);
 
   return chooser;
 }
@@ -511,7 +511,7 @@ QWidget *
 CQPropertyPaletteEditor::
 createEdit(QWidget *parent)
 {
-  CQPaletteChooser *chooser = new CQPaletteChooser(parent);
+  auto *chooser = new CQPaletteChooser(parent);
 
   return chooser;
 }
@@ -559,7 +559,7 @@ QWidget *
 CQPropertyLineDashEditor::
 createEdit(QWidget *parent)
 {
-  CQLineDash *edit = new CQLineDash(parent);
+  auto *edit = new CQLineDash(parent);
 
   return edit;
 }
@@ -607,7 +607,7 @@ QWidget *
 CQPropertyAngleEditor::
 createEdit(QWidget *parent)
 {
-  CQAngleSpinBox *edit = new CQAngleSpinBox(parent);
+  auto *edit = new CQAngleSpinBox(parent);
 
   return edit;
 }

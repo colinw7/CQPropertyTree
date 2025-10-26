@@ -58,8 +58,7 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
   return w;
 }
 
-/*! get data to display in tree widget item
-*/
+//! get data to display in tree widget item
 void
 CQPropertyDelegate::
 setEditorData(QWidget *, const QModelIndex &index) const
@@ -84,8 +83,7 @@ setEditorData(QWidget *, const QModelIndex &index) const
     assert(false);
 }
 
-/*! store displayed tree widget item data in model
-*/
+//! store displayed tree widget item data in model
 void
 CQPropertyDelegate::
 setModelData(QWidget *, QAbstractItemModel *model, const QModelIndex &index) const
