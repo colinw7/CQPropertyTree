@@ -169,7 +169,7 @@ void
 CQPropertyTree::
 expandSelected()
 {
-  QList<QTreeWidgetItem *> items = this->selectedItems();
+  auto items = this->selectedItems();
 
   for (int i = 0; i < items.length(); ++i) {
     QTreeWidgetItem *item = items[i];
